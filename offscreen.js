@@ -12,7 +12,7 @@ const reverseGeocode = async (latitude, longitude) => {
     if (!response.ok) return {};
     const place = await response.json();
     return {
-      city: place.city || place.locality || "",
+      city: place.locality || place.city || "",
       country: place.countryCode || "",
     };
   } catch {

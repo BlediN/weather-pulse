@@ -136,7 +136,7 @@ const loadLocations = () => {
         // Keep the generic current-location label if reverse geocoding fails.
       }
       finish(
-        place.city || place.locality || cityName,
+        place.locality || place.city || cityName,
         place.countryCode || countryCode,
         timezoneName,
       );
