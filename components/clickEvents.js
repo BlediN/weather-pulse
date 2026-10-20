@@ -1,0 +1,1243 @@
+const clickEvents = () => {
+    (document
+      .getElementById("myLocationIp_icon")
+      .addEventListener("click", (e) => {
+        (myLocation(selectedLocation), mp_event("Current Location Click"));
+      }),
+      document
+        .querySelector(".sidebarIconToggle")
+        .addEventListener("click", (e) => {
+          ((cardUpdate.style.display = "none"), mp_event("Sidebar Visit"));
+        }),
+      (dailyPage = () => {
+        (closeAllPopup(),
+          displayModal(),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          (modal7days.style.display = "block"),
+          // Render only after the Daily modal is visible, then repair the icon
+          // nodes on the next paint. This also handles a fresh popup open.
+          typeof daily === "function" && daily(wCast),
+          requestAnimationFrame(() => typeof daily === "function" && daily(wCast)),
+          (favIcon_daily.style.display = "block"),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "daily" == data.setAsHomepage &&
+              (favIcon_daily.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }),
+          dailyIcon.classList.add("sub_menu_icon_active_Class"),
+          dailyIcon.classList.add("sub_menu_current_icon_Class"),
+          dailySub.classList.add("sub_menu_current_Class"),
+          mp_event("Daily Page"));
+      }),
+      (dailyPage = () => {
+        (closeAllPopup(),
+          displayModal(),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          (modal7days.style.display = "block"),
+          // Render only after the Daily modal is visible, then repair the icon
+          // nodes on the next paint. This also handles a fresh popup open.
+          typeof daily === "function" && daily(wCast),
+          requestAnimationFrame(() => typeof daily === "function" && daily(wCast)),
+          (favIcon_daily.style.display = "block"),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "daily" == data.setAsHomepage &&
+              (favIcon_daily.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }),
+          dailyIcon.classList.add("sub_menu_icon_active_Class"),
+          dailyIcon.classList.add("sub_menu_current_icon_Class"),
+          dailySub.classList.add("sub_menu_current_Class"),
+          mp_event("Daily Page"));
+      }),
+      (hourlyPage = () => {
+        (closeAllPopup(),
+          displayModal(),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          (modal48hours.style.display = "block"),
+          (favIcon_hourly.style.display = "block"),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "hourly" == data.setAsHomepage &&
+              (favIcon_hourly.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }),
+          hourlyIcon.classList.add("sub_menu_icon_active_Class"),
+          hourlyIcon.classList.add("sub_menu_current_icon_Class"),
+          hourlySub.classList.add("sub_menu_current_Class"),
+          mp_event("Hourly Page"));
+      }),
+      document.querySelectorAll(".daily_hourly_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          chrome.storage.local.get(
+            ["hourlySelected", "weeklySelected", "outlookSelected"],
+            (data) => {
+              // Outlook period cards represent hourly forecast details.
+              data.hourlySelected || data.outlookSelected
+                ? hourlyPage()
+                : data.weeklySelected
+                  ? dailyPage()
+                  : hourlyPage();
+            },
+          );
+        });
+      }),
+      document.querySelectorAll(".daily_page_Class").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          dailyPage();
+        });
+      }),
+      document.querySelectorAll(".hourly_page_Class").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          hourlyPage();
+        });
+      }),
+      document
+        .getElementById("setting_defualt_theme_d_all")
+        .addEventListener("click", (e) => {
+          (mp_setting("Theme Mode", "Dark"),
+            darkDisplay(),
+            (document.getElementById(
+              "setting_defualt_theme_d_all",
+            ).style.pointerEvents = "none"),
+            (document.getElementById(
+              "setting_defualt_theme_l_all",
+            ).style.pointerEvents = "none"),
+            setTimeout(() => {
+              ((document.getElementById(
+                "setting_defualt_theme_d_all",
+              ).style.pointerEvents = "auto"),
+                (document.getElementById(
+                  "setting_defualt_theme_l_all",
+                ).style.pointerEvents = "auto"));
+            }, 1e3));
+        }),
+      document
+        .getElementById("setting_defualt_theme_l_all")
+        .addEventListener("click", (e) => {
+          (mp_setting("Theme Mode", "Light"),
+            lightDisplay(),
+            (document.getElementById(
+              "setting_defualt_theme_d_all",
+            ).style.pointerEvents = "none"),
+            (document.getElementById(
+              "setting_defualt_theme_l_all",
+            ).style.pointerEvents = "none"),
+            setTimeout(() => {
+              ((document.getElementById(
+                "setting_defualt_theme_d_all",
+              ).style.pointerEvents = "auto"),
+                (document.getElementById(
+                  "setting_defualt_theme_l_all",
+                ).style.pointerEvents = "auto"));
+            }, 1e3));
+        }),
+      document
+        .getElementById("setting_defualt_button_u_all")
+        .addEventListener("click", (e) => {
+          chrome.storage.local.get("weatherpulseFullAccess", (_ref) => {
+            let { weatherpulseFullAccess: weatherpulseFullAccess } = _ref;
+            weatherpulseFullAccess
+              ? (mp_setting("Badge Type", "UV"),
+                (setSettingUT = "u"),
+                chrome.storage.local.set({ setSettingUT: "u" }),
+                delayButtons(),
+                setBadge(
+                  daylight,
+                  iconBadge,
+                  temperature,
+                  updateTime,
+                  citys,
+                  uvIndex,
+                  isWeatherAlert,
+                ),
+                (document.getElementById("setting_defualt_button_u").checked =
+                  !0),
+                (document.getElementById("setting_defualt_button_t").checked =
+                  !1),
+                releaseButtons())
+              : vipPage();
+          });
+        }),
+      document
+        .getElementById("setting_defualt_button_t_all")
+        .addEventListener("click", (e) => {
+          (mp_setting("Badge Type", "Temperature"),
+            (setSettingUT = "t"),
+            chrome.storage.local.set({ setSettingUT: "t" }),
+            delayButtons(),
+            setBadge(
+              daylight,
+              iconBadge,
+              temperature,
+              updateTime,
+              citys,
+              uvIndex,
+              isWeatherAlert,
+            ),
+            (document.getElementById("setting_defualt_button_t").checked = !0),
+            (document.getElementById("setting_defualt_button_u").checked = !1),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_c_all")
+        .addEventListener("click", function (e) {
+          chrome.storage.local.get("setSettingFC", function (data) {
+            ("c" !== data.setSettingFC &&
+              chrome.storage.local.set({ setSettingFC: "c" }, function () {
+                (refreshPopup(wCast),
+                  setBadge(
+                    daylight,
+                    iconBadge,
+                    temperature,
+                    updateTime,
+                    citys,
+                    uvIndex,
+                    isWeatherAlert,
+                  ));
+              }),
+              delayButtons(),
+              releaseButtons());
+          });
+        }),
+      document
+        .getElementById("setting_defualt_button_f_all")
+        .addEventListener("click", function (e) {
+          chrome.storage.local.get("setSettingFC", function (data) {
+            ("f" !== data.setSettingFC &&
+              chrome.storage.local.set({ setSettingFC: "f" }, function () {
+                (refreshPopup(wCast),
+                  setBadge(
+                    daylight,
+                    iconBadge,
+                    temperature,
+                    updateTime,
+                    citys,
+                    uvIndex,
+                    isWeatherAlert,
+                  ));
+              }),
+              delayButtons(),
+              releaseButtons());
+          });
+        }),
+      document.getElementById("setting_defualt_button_f").addEventListener("change", function () {
+        if (!this.checked) return;
+        chrome.storage.local.set({ setSettingFC: "f" }, function () {
+          refreshPopup(wCast);
+          setBadge(daylight, iconBadge, temperature, updateTime, citys, uvIndex, isWeatherAlert);
+        });
+      }),
+      document.getElementById("setting_defualt_button_c").addEventListener("change", function () {
+        if (!this.checked) return;
+        chrome.storage.local.set({ setSettingFC: "c" }, function () {
+          refreshPopup(wCast);
+          setBadge(daylight, iconBadge, temperature, updateTime, citys, uvIndex, isWeatherAlert);
+        });
+      }),
+      (searchPage = () => {
+        (document.getElementById("kid_icon_hover") &&
+          (document.getElementById("kid_icon_hover").style.pointerEvents = "auto"),
+          "block" !== modalSearch.style.display &&
+            (chrome.storage.local.set({ selectedLocationUpdated: 1 }),
+            updateLocationList(),
+            (modalSearch.style.display = "block"),
+            (openSidebar.checked = !1),
+            (cardUpdate.style.display = "none"),
+            (alertPopup.style.visibility = "hidden"),
+            (alertPopupClose.style.visibility = "hidden"),
+            setTimeout(() => {
+              ((searchTitle.style.visibility = "visible"),
+                (searchInner.style.visibility = "visible"));
+            }, 300),
+            searchMap(),
+            setTimeout(() => {
+              document.getElementById("addLocation_popup").style.visibility =
+                "visible";
+            }, 300)),
+          mp_event("Search Page"));
+      }),
+      document.querySelectorAll(".search_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          searchPage();
+        });
+      }),
+      (aqiPage = () => {
+        (aqi_api(latlong, updateTime),
+          closeAllPopup(),
+          displayModal(),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          (favIcon_aqi.style.display = "block"),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "aqi" == data.setAsHomepage &&
+              (favIcon_aqi.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }),
+          (modalAqi.style.display = "block"));
+        var currentIcon = document.getElementById("aqi_icon_popup_page");
+        (currentIcon.classList.add("sub_menu_icon_active_Class"),
+          currentIcon.classList.add("sub_menu_current_icon_Class"),
+          aqiSub.classList.add("sub_menu_current_Class"),
+          (document.getElementById("aqi").style.opacity = "1"),
+          mp_event("AQI Page"));
+      }),
+      document.getElementById("aqi_page").addEventListener("click", (e) => {
+        aqiPage();
+      }),
+      (settingPage = (tabSettingId) => {
+        (closeAllPopup(),
+          (modalSetting.style.display = "block"),
+          (cardUpdate.style.display = "none"));
+        const thirdTabRadio = document.getElementById(tabSettingId);
+        (thirdTabRadio && thirdTabRadio.click(), mp_event("Setting Page"));
+      }),
+      document.querySelectorAll(".setting_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          ((tabSettingId = "tab_setting_unit"), settingPage(tabSettingId));
+        });
+      }),
+      document.querySelectorAll(".extended_hourly_forecast").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          chrome.storage.local.get("weatherpulseFullAccess", (_ref3) => {
+            let { weatherpulseFullAccess: weatherpulseFullAccess } = _ref3;
+            weatherpulseFullAccess || vipPage();
+          });
+        });
+      }),
+      document.querySelectorAll(".calendar_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          chrome.storage.local.get(
+            ["weatherpulseFullAccess", "setAsHomepage", "latlong"],
+            (data) => {
+              data.weatherpulseFullAccess
+                ? (calendar_api(data.latlong).then((result) => {
+                    (closeAllPopup(),
+                      "calendar" == data.setAsHomepage &&
+                        (favIcon_calendar.style.backgroundImage =
+                          'url("/images/favourite-active.svg")'),
+                      calendar(result.resultCalendar, wCast));
+                      }).catch((error) => console.warn("Calendar data unavailable.", error)),
+                  mp_event("30Days Page"))
+                : vipPage();
+            },
+          );
+        });
+      }),
+      document.querySelectorAll(".aqi_forecast_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          chrome.storage.local.get("weatherpulseFullAccess", (_ref4) => {
+            let { weatherpulseFullAccess: weatherpulseFullAccess } = _ref4;
+            weatherpulseFullAccess
+              ? (closeAllPopup(),
+                aqi_forecast(),
+                (document.getElementById(
+                  "aqi_forecast_popup_close",
+                ).style.visibility = "visible"),
+                (modalAqiForecast.style.visibility = "visible"),
+                (modalAqiForecast.style.display = "block"),
+                mp_event("AQI Forecast Page"))
+              : vipPage();
+          });
+        });
+      }),
+      document.querySelectorAll(".lunar_page").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          chrome.storage.local.get(
+            ["weatherpulseFullAccess", "setAsHomepage"],
+            (data) => {
+              (closeAllPopup(),
+                lunar(),
+                "lunar" == data.setAsHomepage &&
+                  (favIcon_lunar.style.backgroundImage =
+                    'url("/images/favourite-active.svg")'),
+                mp_event("Lunar Page"));
+            },
+          );
+        });
+      }),
+      (astroPage = () => {
+        (closeAllPopup(),
+          displayModal(),
+          (modalSolar.style.display = "block"),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          (favIcon_solar.style.display = "block"),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "solar" == data.setAsHomepage &&
+              (favIcon_solar.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }));
+        var currentIcon = document.getElementById("solar_icon_popup_page");
+        (currentIcon.classList.add("sub_menu_icon_active_Class"),
+          currentIcon.classList.add("sub_menu_current_icon_Class"),
+          solarSub.classList.add("sub_menu_current_Class"),
+          mp_event("Solar Page"));
+      }),
+      document.querySelectorAll(".astro_page").forEach((item) => {
+        item.addEventListener("click", (e) => {
+          astroPage();
+        });
+      }),
+      document
+        .getElementById("home_popup_page")
+        .addEventListener("click", (e) => {
+          closeAllPopup();
+        }),
+      (currentPage = () => {
+        (closeAllPopup(),
+          (modalCurrent.style.display = "block"),
+          current(),
+          prev24Hrs(),
+          (favIcon_current.style.display = "block"),
+          chrome.storage.local.set({ setAsHome: 1 }),
+          chrome.storage.local.get("setAsHomepage", (data) => {
+            "report" == data.setAsHomepage &&
+              (favIcon_current.style.backgroundImage =
+                'url("/images/favourite-active.svg")');
+          }),
+          mp_event("Details Page"));
+      }),
+      document.querySelectorAll(".current_button_Class").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          "block" !== modalCurrent.style.display && currentPage();
+        });
+      }),
+      document
+        .getElementById("current_popup_close")
+        .addEventListener("click", (e) => {
+          closeAllPopup();
+        }),
+      document
+        .getElementById("setting_popup_close")
+        .addEventListener("click", (e) => {
+          closeAllPopup();
+        }),
+      document
+        .getElementById("search_popup_close")
+        .addEventListener("click", (e) => {
+          (closeAllPopup(), closeAddLocation());
+        }),
+      document
+        .getElementById("calendar_popup_close")
+        .addEventListener("click", (e) => {
+          ((calendarClose.style.transition = "all 0s"),
+            (calendarClose.style.visibility = "hidden"),
+            closeAllPopup());
+        }),
+      document
+        .getElementById("lunar_popup_close")
+        .addEventListener("click", (e) => {
+          ((modalLunarClose.style.transition = "all 0s"),
+            (modalLunarClose.style.visibility = "hidden"),
+            closeAllPopup());
+        }),
+      document
+        .getElementById("cardUpdate_button")
+        .addEventListener("click", (e) => {
+          const cardTargetNext = window.cardTargetNext;
+          ("" !== cardTargetNext &&
+            (cardTargetNext !== vipPage && (cardUpdate.style.display = "none"),
+            cardTargetNext === settingPage
+              ? settingPage("tab_setting_appe")
+              : cardTargetNext()),
+            mp_event("Ad Card Click"));
+        }),
+      document
+        .getElementById("cardUdate_close")
+        .addEventListener("click", (e) => {
+          ((cardUpdate.style.display = "none"), mp_event("Ad Close"));
+        }),
+      document
+        .getElementById("setting_defualt_button_12h_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ TimeFormat: "12h" }),
+            (setting12.checked = !0),
+            solar(latlong),
+            hourly(wCast),
+            timeFormat(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_image_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ backgroundType: "image" }),
+            imageBackground.classList.remove("hidden"),
+            (defaultImageButton.checked = !0),
+            bgLocal(condition, daylight),
+            mp_setting("Background Type", "Image"),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_color_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ backgroundType: "color" }),
+            (defaultColorButton.checked = !0),
+            (imageBackground.style.backgroundImage = "none"),
+            chrome.storage.local.get(
+              ["theme", "bgColorLight", "bgColorDark"],
+              (data) => {
+                "dark" === data.theme
+                  ? ((imageBackground.style.backgroundColor = data.bgColorDark),
+                    imageBackground.classList.add("hidden"))
+                  : (imageBackground.style.backgroundColor = data.bgColorLight);
+              },
+            ),
+            mp_setting("Background Type", "Color"),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_hazard_today_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ tomorrowHazard: !1 }),
+            mp_setting("Hazard Data", "Today"),
+            (document.getElementById(
+              "setting_defualt_button_hazard_today",
+            ).checked = !0),
+            hazard(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_hazard_tomorrow_all")
+        .addEventListener("click", (e) => {
+          (mp_setting("Hazard Data", "Tomorrow"),
+            chrome.storage.local.set({ tomorrowHazard: !0 }),
+            (document.getElementById(
+              "setting_defualt_button_hazard_tomorrow",
+            ).checked = !0),
+            hazard(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_24h_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ TimeFormat: "24h" }),
+            (setting24.checked = !0),
+            solar(latlong),
+            timeFormat(wCast),
+            hourly(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_cardinal_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windDirUnit: "cardinal" }),
+            (document.getElementById(
+              "setting_defualt_button_cardinal",
+            ).checked = !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_degrees_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windDirUnit: "degrees" }),
+            (document.getElementById("setting_defualt_button_degrees").checked =
+              !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_mb_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "mb" }),
+            (document.getElementById("setting_defualt_button_mb").checked = !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_psi_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "psi" }),
+            (document.getElementById("setting_defualt_button_psi").checked =
+              !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_inhg_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "inhg" }),
+            (document.getElementById("setting_defualt_button_inhg").checked =
+              !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_mmhg_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "mmhg" }),
+            (document.getElementById("setting_defualt_button_mmhg").checked =
+              !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_hpa_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "hpa" }),
+            (document.getElementById("setting_defualt_button_hpa").checked =
+              !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_kpa_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ pressureUnit: "kpa" }),
+            (document.getElementById("setting_defualt_button_kpa").checked =
+              !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_fts_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "fts" }),
+            (document.getElementById("setting_defualt_button_fts").checked =
+              !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_mph_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "mph" }),
+            (document.getElementById("setting_defualt_button_mph").checked =
+              !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_kmh_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "kmh" }),
+            (document.getElementById("setting_defualt_button_kmh").checked =
+              !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_kn_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "kn" }),
+            (document.getElementById("setting_defualt_button_kn").checked = !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_ms_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "ms" }),
+            (document.getElementById("setting_defualt_button_ms").checked = !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_bft_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ windUnit: "bft" }),
+            (document.getElementById("setting_defualt_button_bft").checked =
+              !0),
+            hourly(wCast),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_mi_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ visibilityUnit: "mi" }),
+            (document.getElementById("setting_defualt_button_mi").checked = !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_km_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ visibilityUnit: "km" }),
+            (document.getElementById("setting_defualt_button_km").checked = !0),
+            daily(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_rh_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ humidityUnit: "rh" }),
+            (document.getElementById("setting_defualt_button_rh").checked = !0),
+            refreshPopup(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_gm3_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ humidityUnit: "gm3" }),
+            (document.getElementById("setting_defualt_button_gm3").checked =
+              !0),
+            refreshPopup(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_grft_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ humidityUnit: "grft" }),
+            (document.getElementById("setting_defualt_button_grft").checked =
+              !0),
+            refreshPopup(wCast),
+            delayButtons(),
+            releaseButtons());
+        }),
+      [5, 15, 30, 60, 90, 120].forEach((time) => {
+        const option = document.getElementById(`setting_defualt_button_${time}_all`);
+        if (!option) return;
+        option.addEventListener("click", () => {
+          mp_setting("Interval Update", String(time));
+          chrome.storage.local.set({ IntervalUpdate: String(time) });
+          wCast = [];
+          chrome.storage.local.remove(["wCast", "wCastCachedAt"]);
+          chrome.runtime.sendMessage({ msg: "intervalUpdateMessage" });
+          document.getElementById(`setting_defualt_button_${time}`).checked = true;
+          releaseButtons();
+        });
+      }),
+      document
+        .getElementById("outlook_link_mainPage")
+        .addEventListener("click", (e) => {
+          chrome.storage.local.set({
+            outlookSelected: !0,
+            weeklySelected: !1,
+            hourlySelected: !1,
+          });
+          for (let i = 0; i < 5; i++)
+            document
+              .querySelectorAll(`.forecast_${i}_date_meridian`)
+              .forEach((item) => {
+                item.textContent = "";
+              });
+          (outlook(wCast),
+            (homescreenToday.style.opacity = "0.3"),
+            (homescreenWeek.style.opacity = "0.3"),
+            (homescreenOutlook.style.opacity = "1"),
+            chrome.storage.local.get("setSettingFC", (_ref7) => {
+              let { setSettingFC: setSettingFC } = _ref7;
+              "c" === setSettingFC ? ctemp(wCast) : ftemp(wCast);
+            }));
+        }),
+      document
+        .getElementById("today_link_mainPage")
+        .addEventListener("click", () => {
+          (chrome.storage.local.set({
+            hourlySelected: !0,
+            weeklySelected: !1,
+            outlookSelected: !1,
+          }),
+            (hideForecastDayVertical = (id) => {
+              document.getElementById(id).style.visibility = "hidden";
+            }),
+            ["1", "2", "3", "4"].forEach((id) =>
+              hideForecastDayVertical(`forecast_day_vertical_${id}`),
+            ),
+            timeFormat(wCast),
+            hourly(wCast),
+            (homescreenToday.style.opacity = "1"),
+            (homescreenWeek.style.opacity = "0.3"),
+            (homescreenOutlook.style.opacity = "0.3"),
+            chrome.storage.local.get("setSettingFC", (_ref8) => {
+              let { setSettingFC: setSettingFC } = _ref8;
+              "c" === setSettingFC ? ctemp(wCast) : ftemp(wCast);
+            }));
+        }),
+      document
+        .getElementById("week_link_mainPage")
+        .addEventListener("click", () => {
+          (chrome.storage.local.set({
+            weeklySelected: !0,
+            hourlySelected: !1,
+            outlookSelected: !1,
+          }),
+            (hideForecastDayVertical = (id) => {
+              document.getElementById(id).style.visibility = "hidden";
+            }),
+            ["1", "2", "3", "4"].forEach((id) =>
+              hideForecastDayVertical(`forecast_day_vertical_${id}`),
+            ),
+            timeFormat(wCast),
+            daily(wCast),
+            (homescreenToday.style.opacity = "0.3"),
+            (homescreenWeek.style.opacity = "1"),
+            (homescreenOutlook.style.opacity = "0.3"),
+            chrome.storage.local.get("setSettingFC", (_ref9) => {
+              let { setSettingFC: setSettingFC } = _ref9;
+              "c" === setSettingFC ? ctemp(wCast) : ftemp(wCast);
+            }));
+        }),
+      document
+        .querySelectorAll(".share_download_link_Class")
+        .forEach((item) => {
+          item.addEventListener("click", (event) => {
+            chrome.storage.local.get("theme", (_ref0) => {
+              let { theme: theme } = _ref0;
+              (((theme) => {
+                "dark" === theme
+                  ? ((orginalDark = 1), lightDisplay())
+                  : (orginalDark = 0);
+              })(theme),
+                setTimeout(() => {
+                  loadLib(HTML2CANVAS_LIB).then(() => {
+                    html2canvas(document.body, {
+                      backgroundColor: "#fffff",
+                      allowTaint: !0,
+                      useCORS: !0,
+                      profile: !0,
+                      logging: !0,
+                      ForeignObjectRendering: !0,
+                      scrollX: -window.scrollX,
+                      scrollY: -window.scrollY,
+                      width: 800,
+                      height: 600,
+                    }).then((canvas) => {
+                      1 == orginalDark && darkDisplay();
+                      const base64popupscreen = canvas.toDataURL(
+                          "image/png",
+                          1,
+                        ),
+                        imagepPopupfilename =
+                          moment
+                            .unix(updateTime + offsetUnix)
+                            .format("MM_DD_YYYY_h_mm_A_") +
+                          citys +
+                          ".png",
+                        download = document.createElement("a");
+                      ((download.href = base64popupscreen),
+                        (download.download = imagepPopupfilename),
+                        download.click());
+                    });
+                  });
+                }, 1e3));
+            });
+          });
+        }));
+    let favouriteToggle = !0;
+    (document.querySelectorAll(".favourite_icon_action").forEach((item) => {
+      item.addEventListener("click", () => {
+        "block" == modalCurrent.style.display && favouriteToggle
+          ? (mp_setting("Set as Homepage", "Report"),
+            (favIcon_current.style.backgroundImage =
+              'url("/images/favourite-active.svg")'),
+            chrome.storage.local.set({ setAsHomepage: "report" }),
+            (favouriteToggle = !1))
+          : "block" == modal7days.style.display && favouriteToggle
+            ? (mp_setting("Set as Homepage", "Daily"),
+              (favIcon_daily.style.backgroundImage =
+                'url("/images/favourite-active.svg")'),
+              chrome.storage.local.set({ setAsHomepage: "daily" }),
+              (favouriteToggle = !1))
+            : "block" == modal48hours.style.display && favouriteToggle
+              ? (mp_setting("Set as Homepage", "Hourly"),
+                (favIcon_hourly.style.backgroundImage =
+                  'url("/images/favourite-active.svg")'),
+                chrome.storage.local.set({ setAsHomepage: "hourly" }),
+                (favouriteToggle = !1))
+              : "block" == modalSolar.style.display && favouriteToggle
+                ? (mp_setting("Set as Homepage", "Solar"),
+                  (favIcon_solar.style.backgroundImage =
+                    'url("/images/favourite-active.svg")'),
+                  chrome.storage.local.set({ setAsHomepage: "solar" }),
+                  (favouriteToggle = !1))
+                : "block" == modalAqi.style.display && favouriteToggle
+                  ? (mp_setting("Set as Homepage", "AQI"),
+                    (favIcon_aqi.style.backgroundImage =
+                      'url("/images/favourite-active.svg")'),
+                    chrome.storage.local.set({ setAsHomepage: "aqi" }),
+                    (favouriteToggle = !1))
+                    : "block" == modalCalendar.style.display && favouriteToggle
+                      ? (mp_setting("Set as Homepage", "30Days"),
+                        (favIcon_calendar.style.backgroundImage =
+                          'url("/images/favourite-active.svg")'),
+                        chrome.storage.local.set({ setAsHomepage: "calendar" }),
+                        (favouriteToggle = !1))
+                      : "block" == modalLunar.style.display && favouriteToggle
+                        ? (mp_setting("Set as Homepage", "lunar"),
+                          (favIcon_lunar.style.backgroundImage =
+                            'url("/images/favourite-active.svg")'),
+                          chrome.storage.local.set({ setAsHomepage: "lunar" }),
+                          (favouriteToggle = !1))
+                        : (mp_setting("Set as Homepage", "Home"),
+                          chrome.storage.local.set({ setAsHomepage: "" }),
+                          (favouriteToggle = !0),
+                          (favIcon_current.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_hourly.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_daily.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_solar.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_aqi.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_calendar.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'),
+                          (favIcon_lunar.style.backgroundImage =
+                            'url("/images/favourite-inactive.svg")'));
+      });
+    }),
+      document.getElementById("alert_icon").addEventListener("click", (e) => {
+        wCast.hasOwnProperty("weatherAlerts") &&
+          wCast.weatherAlerts.alerts.length > 0 &&
+          (closeAllPopup(),
+          (alertPopupText.style.visibility = "visible"),
+          (alertPopup.style.visibility = "visible"),
+          (alertPopupClose.style.visibility = "visible"),
+          mp_event("Alert Page"));
+      }),
+      document
+        .getElementById("notification_icon")
+        .addEventListener("click", (e) => {
+          chrome.permissions.request(
+            { permissions: ["notifications"] },
+            (granted) => {
+              granted
+                ? ((document.querySelector(
+                    ".notification_home_Class",
+                  ).style.display = "none"),
+                  mp_setting("Sever Notification", "On"),
+                  (checkboxSever.checked = !0),
+                  (checkboxSever.disabled = !0),
+                  (checkboxNotification.checked = !0),
+                  (checkboxNotification.disabled = !0),
+                  setTimeout(() => {
+                    ((checkboxSever.disabled = !1),
+                      (checkboxNotification.disabled = !1));
+                  }, 1e3))
+                : ((document.querySelector(
+                    ".notification_home_Class",
+                  ).style.display = "block"),
+                  mp_setting("Sever Notification", "Off"),
+                  (checkboxSever.checked = !1),
+                  (checkboxSever.disabled = !0),
+                  (checkboxNotification.checked = !1),
+                  (checkboxNotification.disabled = !0),
+                  setTimeout(() => {
+                    ((checkboxSever.disabled = !1),
+                      (checkboxNotification.disabled = !1));
+                  }, 1e3));
+            },
+          );
+        }),
+      document
+        .getElementById("alert_popup_close")
+        .addEventListener("click", (e) => {
+          (closeAllPopup(),
+            (alertPopup.style.visibility = "hidden"),
+            (alertPopupClose.style.transition = "all 0s"),
+            (alertPopupClose.style.visibility = "hidden"));
+        }),
+      document
+        .getElementById("aqi_forecast_popup_close")
+        .addEventListener("click", (e) => {
+          (closeAllPopup(),
+            (document.getElementById(
+              "aqi_forecast_popup_close",
+            ).style.transition = "all 0s"),
+            (document.getElementById(
+              "aqi_forecast_popup_close",
+            ).style.visibility = "hidden"));
+        }),
+      document.querySelectorAll(".vip_popup_lock_class").forEach((item) => {
+        item.addEventListener("click", (event) => {
+          vipPage();
+        });
+      }),
+      document
+        .querySelectorAll("#setting_section_auto_dark")
+        .forEach((item) => {
+          item.addEventListener("click", (event) => {
+            chrome.storage.local.get("weatherpulseFullAccess", (_ref10) => {
+              let { weatherpulseFullAccess: weatherpulseFullAccess } = _ref10;
+              weatherpulseFullAccess || vipPage();
+            });
+          });
+        }));
+    let allowHover = !1;
+    setTimeout(() => {
+      allowHover = !0;
+    }, 1e3);
+    var isHazardVisitCalled = !1;
+    for (let i = 0; i < hazardButton.length; i++)
+      ((hazardButton[i].onmouseenter = () => {
+        allowHover &&
+          ((titleHomeClassSetting.style.visibility = "hidden"),
+          (homescreenTodayMenu.style.visibility = "hidden"),
+          isHazardVisitCalled ||
+            (mp_event("Hazard Visit"),
+            (isHazardVisitCalled = !0),
+            setTimeout(() => {
+              isHazardVisitCalled = !1;
+            }, 3e4)));
+      }),
+        (hazardButton[i].onmouseleave = () => {
+          ((titleHomeClassSetting.style.visibility = "visible"),
+            (homescreenTodayMenu.style.visibility = "visible"));
+        }));
+    var is60MinVisitCalled = !1;
+    for (let i = 0; i < mins60Button.length; i++)
+      ((mins60Button[i].onmouseenter = () => {
+        allowHover &&
+          ((titleHomeClassSetting.style.visibility = "hidden"),
+          (homescreenTodayMenu.style.visibility = "hidden"),
+          is60MinVisitCalled ||
+            (mp_event("60 Min. Visit"),
+            (is60MinVisitCalled = !0),
+            setTimeout(() => {
+              is60MinVisitCalled = !1;
+            }, 3e4)));
+      }),
+        (mins60Button[i].onmouseleave = () => {
+          ((titleHomeClassSetting.style.visibility = "visible"),
+            (homescreenTodayMenu.style.visibility = "visible"));
+        }));
+    var isComparVisitCalled = !1;
+    for (let i = 0; i < comparButton.length; i++)
+      ((comparButton[i].onmouseenter = () => {
+        allowHover &&
+          chrome.storage.local.get(
+            ["latlong", "country", "timezone"],
+            (data) => {
+              ((titleHomeClassSetting.style.visibility = "hidden"),
+                (homescreenTodayMenu.style.visibility = "hidden"),
+                comparison(data.latlong, data.country, data.timezone),
+                isComparVisitCalled ||
+                  (mp_event("Comparison Visit"),
+                  (isComparVisitCalled = !0),
+                  setTimeout(() => {
+                    isComparVisitCalled = !1;
+                  }, 3e4)));
+            },
+          );
+      }),
+        (comparButton[i].onmouseleave = () => {
+          ((titleHomeClassSetting.style.visibility = "visible"),
+            (homescreenTodayMenu.style.visibility = "visible"));
+        }));
+      document
+        .getElementById("setting_defualt_button_mmh_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ precipitationUnit: "mmh" }),
+            (document.getElementById("setting_defualt_button_mmh").checked =
+              !0),
+            delayButtons(),
+            releaseButtons());
+        }),
+      document
+        .getElementById("setting_defualt_button_inph_all")
+        .addEventListener("click", (e) => {
+          (chrome.storage.local.set({ precipitationUnit: "inph" }),
+            (document.getElementById("setting_defualt_button_inph").checked =
+              !0),
+            delayButtons(),
+            releaseButtons());
+        });
+  },
+  releaseButtons = () => {
+    setTimeout(() => {
+      ((document.getElementById(
+        "setting_defualt_button_15_all",
+      ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_30_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_60_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_90_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_120_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_c_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_f_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_u_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_t_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_12h_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_24h_all",
+        ).style.pointerEvents = "auto"),
+        (document.querySelector(
+          ".setting_section_badge_size_Class",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_mph_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_kmh_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_kn_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_ms_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_bft_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_mb_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_psi_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_hazard_today_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_hazard_tomorrow_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_image_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_color_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_cardinal_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_degrees_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_mi_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_km_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_mmh_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_inph_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_rh_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_gm3_all",
+        ).style.pointerEvents = "auto"),
+        (document.getElementById(
+          "setting_defualt_button_grft_all",
+        ).style.pointerEvents = "auto"));
+    }, 1e3);
+  },
+  delayButtons = () => {
+    ((document.getElementById(
+      "setting_defualt_button_c_all",
+    ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_f_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_u_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_t_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_12h_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_24h_all",
+      ).style.pointerEvents = "none"),
+      (document.querySelector(
+        ".setting_section_badge_size_Class",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_mph_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_kmh_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_kn_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_ms_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_bft_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_mb_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_psi_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_image_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_color_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_cardinal_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_degrees_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_mi_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_km_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_mmh_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_inph_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_rh_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_gm3_all",
+      ).style.pointerEvents = "none"),
+      (document.getElementById(
+        "setting_defualt_button_grft_all",
+      ).style.pointerEvents = "none"));
+  };

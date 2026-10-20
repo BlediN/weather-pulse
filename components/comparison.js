@@ -1,0 +1,50 @@
+const comparison = async (latlong, country, timezone) => {
+  const set = (id, value) => { const el = document.getElementById(id); if (el) el.textContent = value; };
+  ["compare_temp_max_y", "compare_temp_min_y", "compare_humi_y", "compare_gust_y", "compare_wind_y", "compare_uv_y"].forEach((id) => set(id, "—"));
+  ["compare_humi_icon", "compare_temp_max_icon", "compare_temp_min_icon", "compare_uv_icon", "compare_gust_icon", "compare_wind_icon"].forEach((id) => set(id, "≈"));
+  try {
+    const data = await new Promise((resolve) => chrome.storage.local.get("setSettingFC", resolve));
+    const today = wCast?.forecastDaily?.days?.[0];
+    if (!today || typeof weatherpulseFetchHistoricalDay !== "function") throw new Error("Current forecast is unavailable");
+    const [lat, lng] = latlong.split(",");
+    const tz = timezone || "auto";
+    const yesterdayDate = moment().tz(tz).subtract(1, "day").format("YYYY-MM-DD");
+    const archive = await weatherpulseFetchHistoricalDay(lat, lng, tz, yesterdayDate);
+    const daily = archive?.daily || {};
+    const hourly = archive?.hourly || {};
+    const max = daily.temperature_2m_max?.[0];
+    const min = daily.temperature_2m_min?.[0];
+    if (!Number.isFinite(max) || !Number.isFinite(min)) throw new Error("No historical daily data returned");
+    const humidityValues = (hourly.relative_humidity_2m || []).filter(Number.isFinite);
+    const humidity = humidityValues.length ? Math.round(humidityValues.reduce((a,b) => a+b, 0) / humidityValues.length) : 0;
+    const gust = Number(daily.wind_gusts_10m_max?.[0] ?? 0) / 3.6;
+    const wind = Number(daily.wind_speed_10m_max?.[0] ?? 0) / 3.6;
+    const uv = Number(daily.uv_index_max?.[0] ?? 0);
+    const tempMaxToday = today.temperatureMax + 273.15;
+    const tempMinToday = today.temperatureMin + 273.15;
+    const gustToday = (today.daytimeForecast?.windGustSpeedMax ?? 0) / 3.6;
+    const windToday = (today.daytimeForecast?.windSpeed ?? 0) / 3.6;
+    const humidityToday = Math.round(100 * (today.daytimeForecast?.humidity ?? 0));
+    const uvToday = Number(today.maxUvIndex ?? 0);
+    set("compare_temp_max_t", data.setSettingFC === "c" ? `${k2c(tempMaxToday)}°` : `${k2f(tempMaxToday)}°`);
+    set("compare_temp_min_t", data.setSettingFC === "c" ? `${k2c(tempMinToday)}°` : `${k2f(tempMinToday)}°`);
+    set("compare_humi_t", `${humidityToday}%`);
+    set("compare_uv_t", chrome.i18n.getMessage("comparisonUv", [String(uvToday)]));
+    set("compare_temp_max_y", data.setSettingFC === "c" ? `${Math.round(max)}°` : `${c2f(max)}°`);
+    set("compare_temp_min_y", data.setSettingFC === "c" ? `${Math.round(min)}°` : `${c2f(min)}°`);
+    set("compare_humi_y", `${humidity}%`);
+    set("compare_uv_y", chrome.i18n.getMessage("comparisonUv", [String(uv)]));
+    set("compare_humi_icon", compareVisualIcon(humidity, humidityToday, 4));
+    set("compare_temp_max_icon", compareVisualIcon(max, tempMaxToday - 273.15, 1));
+    set("compare_temp_min_icon", compareVisualIcon(min, tempMinToday - 273.15, 1));
+    set("compare_uv_icon", compareVisualIcon(uv, uvToday, 0.5));
+    set("compare_gust_icon", compareVisualIcon(gust, gustToday, 1));
+    set("compare_wind_icon", compareVisualIcon(wind, windToday, 1));
+    set("compare_gust_t", await windDisplay(gustToday));
+    set("compare_wind_t", await windDisplay(windToday));
+    set("compare_gust_y", await windDisplay(gust));
+    set("compare_wind_y", await windDisplay(wind));
+  } catch (error) {
+    console.warn("Yesterday comparison unavailable from Open-Meteo archive.", error);
+  }
+};

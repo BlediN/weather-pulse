@@ -1,0 +1,250 @@
+const hourly = (wCast) => {
+    ((hourlyTimelineIcon = []),
+      chrome.storage.local.get(["weatherpulseFullAccess", "animatedIcon"], (data) => {
+        let endOfHourly = data.weatherpulseFullAccess
+          ? wCast.forecastHourly.hours.length
+          : 48;
+        window.weatherpulseAnimatedIcon = "1" === data.animatedIcon;
+        hourlyStructure().then(() => refreshHourly(0, endOfHourly));
+      }));
+  },
+  hourlyStructure = () => {
+    const createForecastItem = (index) => {
+      const forecastItem = document.createElement("div");
+      ((forecastItem.id = `hourly_${index}`),
+        (forecastItem.className = `hourly_${index}`));
+      const hourGroup = document.createElement("span");
+      hourGroup.className = "forecast_hour_modal_group_Class";
+      const hour = document.createElement("span");
+      ((hour.id = `forecast_${index}_hours`),
+        (hour.className = "forecast_hour_modal_Class"),
+        (hour.innerText = "-"));
+      const meridian = document.createElement("span");
+      ((meridian.id = `forecast_${index}_hours_meridian`),
+        (meridian.className = "forecast_hour_meridian_Class"),
+        hourGroup.appendChild(hour),
+        hourGroup.appendChild(meridian));
+      const hourlyCondition = document.createElement("span");
+      ((hourlyCondition.className = "forecast_hourlyCondition_modal_Class"),
+        (hourlyCondition.id = `forecast_${index}_hourly_condition`),
+        (hourlyCondition.innerText = "-"));
+      const rainGroup = document.createElement("span");
+      rainGroup.className = "forecast_rain_group_Class";
+      const rainIcon = document.createElement("span");
+      ((rainIcon.className = `forecast_${index}_hours_icon_Class forecast_icon_modal_Class`),
+        (rainIcon.innerText = "."));
+      const rain = document.createElement("span");
+      ((rain.id = `forecast_${index}_hours_rain`),
+        (rain.className = "forecast_rain_modal_Class"),
+        (rain.innerText = "-"),
+        rainGroup.appendChild(rainIcon),
+        rainGroup.appendChild(rain));
+      const uvGroup = document.createElement("span");
+      uvGroup.className = "icon_uv_group_hourly_Class";
+      const uvicon = document.createElement("span");
+      uvicon.className = "uvi_icon_hourly_Class";
+      const uv = document.createElement("span");
+      ((uv.id = `forecast_${index}_hourly_uv`),
+        (uv.className = "forecast_uv_modal_Class"),
+        (uv.innerText = "-"),
+        uvGroup.appendChild(uvicon),
+        uvGroup.appendChild(uv));
+      const tempGroup = document.createElement("span");
+      tempGroup.className = "icon_temp_group_hourly_Class";
+      const temp = document.createElement("span");
+      return (
+        (temp.id = `forecast_${index}_hourly_temp`),
+        (temp.className = "forecast_temp_modal_Class"),
+        (temp.innerText = "-°"),
+        tempGroup.appendChild(temp),
+        forecastItem.appendChild(hourGroup),
+        forecastItem.appendChild(hourlyCondition),
+        forecastItem.appendChild(uvGroup),
+        forecastItem.appendChild(rainGroup),
+        forecastItem.appendChild(tempGroup),
+        forecastItem
+      );
+    };
+    return (
+      (populateForecastTable = () => {
+        chrome.storage.local.get("weatherpulseFullAccess", (data) => {
+          let endOfHourly = data.weatherpulseFullAccess
+            ? wCast.forecastHourly.hours.length
+            : 48;
+          const forecastTable = document.getElementById("forecastTable");
+          forecastTable.innerHTML = "";
+          for (let i = 0; i < endOfHourly; i++) {
+            const forecastItem = createForecastItem(i);
+            if (
+              (forecastTable.appendChild(forecastItem), i < endOfHourly - 1)
+            ) {
+              const hr = document.createElement("hr");
+              ((hr.id = `hr_forecast_hourly_${i}`),
+                (hr.className = "hr_forecast"),
+                forecastTable.appendChild(hr));
+            }
+          }
+        });
+      }),
+      new Promise((resolve) => {
+        (populateForecastTable(), resolve());
+      })
+    );
+  };
+let hourlyTimelineIcon = [];
+const refreshHourly = (startTimeHourly, endTimeHourly) => {
+    chrome.storage.local.get(
+      ["setSettingFC", "TimeFormat", "hourlySelected"],
+      (data) => {
+        const timeFormats = {
+            "24h": { formatTimeH: "HH:00", formatTimeHmeridian: "" },
+            default: { formatTimeH: "h", formatTimeHmeridian: "A" },
+          },
+          {
+            formatTimeH: formatTimeH,
+            formatTimeHmeridian: formatTimeHmeridian,
+          } = timeFormats[data.TimeFormat] || timeFormats.default;
+        for (let i = startTimeHourly; i < endTimeHourly; i++) {
+          ((currentHour = moment
+            .unix(
+              toTimestamp(wCast.forecastHourly.hours[i].forecastStart) +
+                offsetUnix,
+            )
+            .format("DD")),
+            (lastHour =
+              i == startTimeHourly
+                ? moment
+                    .unix(
+                      toTimestamp(wCast.forecastHourly.hours[i].forecastStart) +
+                        offsetUnix,
+                    )
+                    .format("DD")
+                : moment
+                    .unix(
+                      toTimestamp(
+                        wCast.forecastHourly.hours[i - 1].forecastStart,
+                      ) + offsetUnix,
+                    )
+                    .format("DD")),
+            currentHour != lastHour
+              ? ((document.getElementById(`forecast_${i}_hours`).textContent =
+                  moment
+                    .unix(
+                      toTimestamp(wCast.forecastHourly.hours[i].forecastStart) +
+                        offsetUnix,
+                    )
+                    .format("ddd D MMM")),
+                (document.getElementById(
+                  `forecast_${i}_hours_meridian`,
+                ).textContent = ""),
+                (document.getElementById(
+                  `forecast_${i}_hours`,
+                ).style.fontWeight = "600"),
+                (document.getElementById(
+                  "hr_forecast_hourly_" + (i - 1),
+                ).style.height = "4px"),
+                (document.getElementById(
+                  "hr_forecast_hourly_" + (i - 1),
+                ).style.width = "110%"))
+              : 0 == i
+                ? ((document.getElementById(`forecast_${i}_hours`).textContent =
+                    chrome.i18n.getMessage("now")),
+                  (document.getElementById(
+                    `forecast_${i}_hours_meridian`,
+                  ).textContent = ""))
+                : ((document.getElementById(`forecast_${i}_hours`).textContent =
+                    moment
+                      .unix(
+                        toTimestamp(
+                          wCast.forecastHourly.hours[i].forecastStart,
+                        ) + offsetUnix,
+                      )
+                      .format(formatTimeH)),
+                  "12h" == data.TimeFormat
+                    ? (document.getElementById(
+                        `forecast_${i}_hours_meridian`,
+                      ).textContent = moment
+                        .unix(
+                          toTimestamp(
+                            wCast.forecastHourly.hours[i].forecastStart,
+                          ) + offsetUnix,
+                        )
+                        .format(formatTimeHmeridian))
+                    : (document.getElementById(
+                        `forecast_${i}_hours_meridian`,
+                      ).textContent = "")),
+            (document.getElementById(`forecast_${i}_hourly_uv`).textContent =
+              Number(wCast.forecastHourly.hours[i].uvIndex).toFixed(1)),
+            (document.getElementById(
+              `forecast_${i}_hourly_condition`,
+            ).textContent =
+              wCast.forecastHourly.hours[i].description ||
+              getWeDescription(wCast.forecastHourly.hours[i].conditionCode)),
+            "c" === data.setSettingFC
+              ? (document.getElementById(
+                  `forecast_${i}_hourly_temp`,
+                ).textContent =
+                  `${k2c(wCast.forecastHourly.hours[i].temperature + 273.15)}°`)
+              : (document.getElementById(
+                  `forecast_${i}_hourly_temp`,
+                ).textContent =
+                  `${k2f(wCast.forecastHourly.hours[i].temperature + 273.15)}°`),
+            (forecast_hours_condition =
+              wCast.forecastHourly.hours[i].conditionCode),
+            (forecast_hours_daylight = wCast.forecastHourly.hours[i].daylight),
+            (forecast_hours_cloudCover =
+              wCast.forecastHourly.hours[i].cloudCover),
+            (forecast_hours_icon = getWeIcon(
+              forecast_hours_condition,
+              forecast_hours_daylight,
+              forecast_hours_cloudCover,
+            )),
+            hourlyTimelineIcon.push(forecast_hours_icon));
+          let rainValuePopHourly = Math.round(
+              100 * Number(wCast.forecastHourly.hours[i].precipitationChance ?? 0),
+            ),
+            forecastRainPopHourly = document.getElementById(
+              `forecast_${i}_hours_rain`,
+            );
+          forecastRainPopHourly.textContent =
+            rainValuePopHourly + "%";
+          const updateIcon = (i, iconFileName) => {
+            const hourlyIcon = document.querySelector(`.forecast_${i}_hours_icon_Class`);
+            if (hourlyIcon) {
+              hourlyIcon.style.backgroundImage = `url("images/weather_icon/${iconFileName}")`;
+              hourlyIcon.classList.toggle("weather-icon-animated", !!window.weatherpulseAnimatedIcon);
+            }
+            if (i < 5 && void 0 !== data.hourlySelected && data.hourlySelected) {
+              const homeIcon = document.querySelector(`.forecast_${i}_homePage_icon_Class`);
+              if (homeIcon) {
+                homeIcon.style.backgroundImage = `url("images/weather_icon/${iconFileName}")`;
+                homeIcon.classList.toggle("weather-icon-animated", !!window.weatherpulseAnimatedIcon);
+              }
+            }
+          };
+          updateIcon(i, getColorWeatherIcon(forecast_hours_icon));
+        }
+        hourlyTimelineSide(hourlyTimelineIcon);
+      },
+    );
+  },
+  hourlyTimelineSide = (hourlyTimelineIcon) => {
+    timelineDailyAll.innerHTML = "";
+    hourlyTimeline = ((hourlyTimelineIcon) => (
+      Array.isArray(hourlyTimelineIcon) ||
+        (hourlyTimelineIcon = Array.from(hourlyTimelineIcon)),
+      hourlyTimelineIcon.slice(1, hourlyTimelineIcon.length).map((icons, i) => {
+        const forecast_hours_condition = icons,
+          textTimeline = getTimelineText(forecast_hours_condition);
+        return {
+          color: getTimelineColor(forecast_hours_condition),
+          text: textTimeline,
+          time: 1672117200 + 36e5 * (i + 1),
+        };
+      })
+    ))(hourlyTimelineIcon);
+    var count = hourlyTimelineIcon.length;
+    timelineHourly(timelineDailyAll, hourlyTimeline, {
+      width: 36.88 * (count <= 48 ? count - 1.5 : count),
+    });
+  };

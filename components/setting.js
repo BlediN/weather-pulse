@@ -1,0 +1,251 @@
+const setting = () => {
+  ((document.getElementById("title_version_setting").textContent =
+    chrome.i18n.getMessage("settingWeatherPulseVersion", [
+      chrome.runtime.getManifest().version,
+    ])),
+    (document.getElementById("chrome_version_setting").textContent =
+      chrome.i18n.getMessage("settingChromeVersion", [
+        getChromeVersion().pieces,
+      ])),
+    chrome.storage.local.get(
+      [
+        "IntervalUpdate",
+        "WeatherCacheMinutes",
+        "windUnit",
+        "pressureUnit",
+        "windDirUnit",
+        "humidityUnit",
+        "visibilityUnit",
+        "tomorrowHazard",
+        "selectedLocationNumber",
+        "theme",
+        "bgColorLight",
+        "bgColorDark",
+        "backgroundType",
+        "weeklySelected",
+        "outlookSelected",
+        "hourlySelected",
+        "setSettingFC",
+        "setSettingUT",
+        "precipitationUnit",
+      ],
+      (data) => {
+        ((settingBadgeU.checked = "u" === data.setSettingUT),
+          (settingBadgeT.checked = "u" !== data.setSettingUT),
+          (settingTempF.checked = "f" === data.setSettingFC),
+          (settingTempC.checked = "f" !== data.setSettingFC),
+          data.hourlySelected
+            ? ((homescreenOutlook.style.opacity = "0.5"),
+              (homescreenToday.style.opacity = "1"),
+              (homescreenWeek.style.opacity = "0.5"))
+            : data.weeklySelected
+              ? ((homescreenOutlook.style.opacity = "0.5"),
+                (homescreenToday.style.opacity = "0.5"),
+                (homescreenWeek.style.opacity = "1"))
+              : (chrome.storage.local.set({
+                  outlookSelected: !0,
+                  hourlySelected: !1,
+                  weeklySelected: !1,
+                }),
+                (homescreenOutlook.style.opacity = "1"),
+                (homescreenToday.style.opacity = "0.5"),
+                (homescreenWeek.style.opacity = "0.5")));
+        const intervalMap = {
+            120: "setting_defualt_button_120",
+            90: "setting_defualt_button_90",
+            60: "setting_defualt_button_60",
+            30: "setting_defualt_button_30",
+            15: "setting_defualt_button_15",
+            5: "setting_defualt_button_5",
+          },
+          selectedInterval =
+            data.IntervalUpdate in intervalMap ? data.IntervalUpdate : "5";
+        if (data.IntervalUpdate === undefined) chrome.storage.local.set({ IntervalUpdate: "5" });
+        const intervalButton = document.getElementById(intervalMap[selectedInterval]);
+        if (intervalButton) intervalButton.checked = !0;
+
+        const cacheMinutes = [5, 15, 30, 60].includes(Number(data.WeatherCacheMinutes))
+          ? Number(data.WeatherCacheMinutes)
+          : 5;
+        if (data.WeatherCacheMinutes === undefined) chrome.storage.local.set({ WeatherCacheMinutes: "5" });
+        const cacheButton = document.getElementById(`setting_cache_${cacheMinutes}`);
+        if (cacheButton) cacheButton.checked = !0;
+        const defaultOptionWindUnit = [
+          "mph",
+          "kmh",
+          "ms",
+          "bft",
+          "kn",
+          "fts",
+        ].includes(data.windUnit)
+          ? data.windUnit
+          : "mph";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionWindUnit}`,
+        ).checked = !0;
+        const defaultOptionPressureUnit = [
+          "mb",
+          "psi",
+          "inhg",
+          "mmhg",
+          "hpa",
+          "kpa",
+        ].includes(data.pressureUnit)
+          ? data.pressureUnit
+          : "hpa";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionPressureUnit}`,
+        ).checked = !0;
+        const defaultOptionVisibilityUnit = ["mi", "km"].includes(
+          data.visibilityUnit,
+        )
+          ? data.visibilityUnit
+          : "mi";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionVisibilityUnit}`,
+        ).checked = !0;
+        const defaultOptionPrecipitationUnit = ["mmh", "inph"].includes(
+          data.precipitationUnit,
+        )
+          ? data.precipitationUnit
+          : "inph";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionPrecipitationUnit}`,
+        ).checked = !0;
+        const defaultOptionHumidity =
+          "gm3" === data.humidityUnit || "grft" === data.humidityUnit
+            ? data.humidityUnit
+            : "rh";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionHumidity}`,
+        ).checked = !0;
+        const defaultOptionWindDir =
+          "degrees" === data.windDirUnit ? "degrees" : "cardinal";
+        document.getElementById(
+          `setting_defualt_button_${defaultOptionWindDir}`,
+        ).checked = !0;
+        const defaultOptionHazard = data.tomorrowHazard
+          ? "hazard_tomorrow"
+          : "hazard_today";
+        ((document.getElementById(
+          `setting_defualt_button_${defaultOptionHazard}`,
+        ).checked = !0),
+          window.screen.width &&
+            window.screen.height &&
+            (mp_setting("Screen Width", window.screen.width),
+            mp_setting("Screen Height", window.screen.height)),
+          void 0 !== data.backgroundType && "color" == data.backgroundType
+            ? ((backgroundType = data.backgroundType),
+              mp_setting("Background Type", "Color"))
+            : (chrome.storage.local.set({ backgroundType: "image" }),
+              (backgroundType = "image"),
+              mp_setting("Background Type", "Image")),
+          void 0 !== data.bgColorLight
+            ? (bgColorLight = data.bgColorLight)
+            : (chrome.storage.local.set({ bgColorLight: "#ffffff" }),
+              (bgColorLight = "#ffffff")),
+          (bgColorDark = data.bgColorDark || "#202124"),
+          void 0 === data.bgColorDark &&
+            chrome.storage.local.set({ bgColorDark: bgColorDark }),
+          "color" === backgroundType
+            ? ((defaultImageButton.checked = !1),
+              (defaultColorButton.checked = !0),
+              "dark" === data.theme && imageBackground.classList.add("hidden"))
+            : ((defaultImageButton.checked = !0),
+              (defaultColorButton.checked = !1),
+              (imageBackground.style.backgroundColor = "#202124")));
+        const bgColor = "dark" === data.theme ? bgColorDark : bgColorLight;
+        (document.documentElement.style.setProperty("--bg-color", bgColor),
+          document
+            .getElementById("background_color_dark")
+            .setAttribute("value", bgColorDark),
+          document
+            .getElementById("background_color_light")
+            .setAttribute("value", bgColorLight),
+          loadLib(COLORIS_LIBS).then(() => {
+            Coloris({ el: ".coloris", wrap: !0 });
+            var darkBtn = document.querySelector(
+              ".fullBgColor_dark .clr-field button",
+            );
+            darkBtn && (darkBtn.style.color = bgColorDark);
+            var lightBtn = document.querySelector(
+              ".fullBgColor_light .clr-field button",
+            );
+            (lightBtn && (lightBtn.style.color = bgColorLight),
+              Coloris.setInstance(".background_light_Class", {
+                themeMode: data.theme,
+                theme: "polaroid",
+                swatchesOnly: !1,
+                alpha: !1,
+                focusInput: !0,
+                selectInput: !0,
+                swatches: [
+                  "#ffffff",
+                  "#f4e7e7",
+                  "#eedbdb",
+                  "#e3c9c9",
+                  "#cecbcb",
+                  "#cbdadb",
+                ],
+                onChange: (color) => {
+                  (chrome.storage.local.set({ bgColorLight: color }),
+                    (document.querySelector(
+                      ".fullBgColor_light .clr-field button",
+                    ).style.color = color),
+                    lightDisplay());
+                },
+              }),
+              Coloris.setInstance(".background_dark_Class", {
+                themeMode: data.theme,
+                theme: "polaroid",
+                swatchesOnly: !1,
+                alpha: !1,
+                focusInput: !0,
+                selectInput: !0,
+                swatches: [
+                  "#202124",
+                  "#4E6E81",
+                  "#355C7D",
+                  "#6C5B7B",
+                  "#9E4784",
+                  "#C06C84",
+                ],
+                onChange: (color) => {
+                  (chrome.storage.local.set({ bgColorDark: color }),
+                    (document.querySelector(
+                      ".fullBgColor_dark .clr-field button",
+                    ).style.color = color),
+                    darkDisplay());
+                },
+              }));
+          }));
+        var langSelect = document.getElementById("setting_language_select");
+        if (langSelect) {
+          var currentLang = localStorage.getItem("weatherpulse_language") || "en";
+          ((langSelect.value = currentLang),
+            langSelect.addEventListener("change", function () {
+              var lang = langSelect.value;
+              (localStorage.setItem("weatherpulse_language", lang),
+                window.location.reload());
+            }));
+        }
+      },
+    ));
+};
+
+document.addEventListener("click", (event) => {
+  const option = event.target.closest(
+    "#setting_cache_5_all, #setting_cache_15_all, #setting_cache_30_all, #setting_cache_60_all",
+  );
+  if (!option) return;
+  const match = option.id.match(/setting_cache_(5|15|30|60)_all/);
+  if (!match) return;
+  const minutes = match[1];
+  chrome.storage.local.set({ WeatherCacheMinutes: minutes }, () => {
+    chrome.storage.local.remove(["wCast", "wCastCachedAt"], () => {
+      const button = document.getElementById(`setting_cache_${minutes}`);
+      if (button) button.checked = true;
+      if (typeof globalThis.popup === "function") globalThis.popup();
+    });
+  });
+});
