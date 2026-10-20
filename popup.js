@@ -364,7 +364,24 @@ document.addEventListener("DOMContentLoaded", () => {
         latlong = data.latlong;
         country = data.country;
         citys = data.citys;
-        timezone = data.timezone;
+        timezone =
+          typeof data.timezone === "string" && moment.tz.zone(data.timezone)
+            ? data.timezone
+            : undefined;
+        if (
+          !timezone &&
+          typeof latlong === "string" &&
+          typeof tzlookup === "function"
+        ) {
+          const [latitude, longitude] = latlong.split(",").map(Number);
+          if (Number.isFinite(latitude) && Number.isFinite(longitude)) {
+            const resolvedTimeZone = tzlookup(latitude, longitude);
+            if (resolvedTimeZone && moment.tz.zone(resolvedTimeZone)) {
+              timezone = resolvedTimeZone;
+              chrome.storage.local.set({ timezone });
+            }
+          }
+        }
         timeZoneBadge = getTimezoneOffset(timezone);
         Promise.all([
           (function (latlong, country, timezone) {

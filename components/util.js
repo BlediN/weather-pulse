@@ -151,10 +151,20 @@ const capitalize = (s) =>
   truncateCityName = (cityName) =>
     cityName && cityName.length > 15 ? cityName.substr(0, 15) : cityName,
   getTimezoneOffset = (timeZone) => {
-    var utcSystemTime = new Date(new Date().toUTCString()).toISOString(),
+    const requestedTimeZone =
+        typeof timeZone === "string" && moment.tz.zone(timeZone)
+          ? timeZone
+          : null,
+      guessedTimeZone = moment.tz.guess(),
+      resolvedTimeZone =
+        requestedTimeZone ||
+        (guessedTimeZone && moment.tz.zone(guessedTimeZone)
+          ? guessedTimeZone
+          : "UTC"),
+      utcSystemTime = new Date(new Date().toUTCString()).toISOString(),
       utcSystemTimeM = moment(utcSystemTime);
     return (
-      (timeZoneBadge = 60 * utcSystemTimeM.tz(timeZone).utcOffset()),
+      (timeZoneBadge = 60 * utcSystemTimeM.tz(resolvedTimeZone).utcOffset()),
       chrome.storage.local.set({ timeZoneBadge: timeZoneBadge }),
       timeZoneBadge
     );
