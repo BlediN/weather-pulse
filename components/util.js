@@ -568,8 +568,8 @@ const capitalize = (s) =>
         // obscures as little of the enlarged weather icon as possible.
         const numberText = String(displayTemperature);
         const unitText = String(unit).toUpperCase();
-        const numberFont = 58;
-        const unitFont = 22;
+        const numberFont = 70;
+        const unitFont = 24;
         const textGap = 2;
         const rightMargin = 3;
 
